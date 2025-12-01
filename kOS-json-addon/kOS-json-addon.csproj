@@ -32,16 +32,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\dlls\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\dlls\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="kOS">
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\GameData\kOS\Plugins\kOS.dll</HintPath>
+      <HintPath>..\..\dlls\kOS.dll</HintPath>
     </Reference>
     <Reference Include="kOS.Safe">
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\GameData\kOS\Plugins\kOS.Safe.dll</HintPath>
+      <HintPath>..\..\dlls\kOS.Safe.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,17 +52,17 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\dlls\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\dlls\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\KSP_x64_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>..\..\dlls\UnityEngine.JSONSerializeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>Z:\Kerbal Space Program\Kerbal Space Program RSS Dev\KSP_x64_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\..\dlls\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
