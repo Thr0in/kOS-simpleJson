@@ -1,6 +1,6 @@
 {
   "NAME": "kOS-simpleJson",
-  "URL": "https://raw.githubusercontent.com/Thr0in/kOS-simpleJson/main/Resources/GameData/kOS-simpleJson/kOS-simpleJson.version",
+  "URL": "https://raw.githubusercontent.com/Thr0in/kOS-simpleJson/main/GameData/kOS-simpleJson/kOS-simpleJson.version",
   "DOWNLOAD": "https://github.com/Thr0in/kOS-simpleJson/releases",
   "CHANGE_LOG_URL": "https://github.com/Thr0in/kOS-simpleJson/commits/v1.0.0",
   "GITHUB": {
