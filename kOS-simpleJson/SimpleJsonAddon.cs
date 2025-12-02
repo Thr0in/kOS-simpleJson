@@ -8,9 +8,9 @@ namespace kOS.AddOns.Json
 {
     [kOSAddon("JSON")]
     [kOS.Safe.Utilities.KOSNomenclature("JSONAddon")]
-    public class Addon : Suffixed.Addon
+    public class SimpleJsonAddon : Suffixed.Addon
     {
-        public Addon(SharedObjects shared) : base(shared)
+        public SimpleJsonAddon(SharedObjects shared) : base(shared)
         {
             InitializeSufixes();
         }
