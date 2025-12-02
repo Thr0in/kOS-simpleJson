@@ -1,5 +1,8 @@
 ﻿using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
+using kOS.Safe.Exceptions;
+using kOS.Safe.Persistence;
+using kOS.Safe.Serialization;
 using System;
 using UnityEngine;
 
@@ -27,12 +30,19 @@ namespace kOS.AddOns.Json
 
         private StringValue Stringify(Structure obj)
         {
-            return UnityEngine.JsonUtility.ToJson(obj);
+            SerializableStructure serialized = obj as SerializableStructure;
+
+            if (serialized == null)
+            {
+                throw new KOSException("This type is not serializable");
+            }
+            string serializedString = new SafeSerializationMgr(shared).Serialize(serialized, SimpleJsonFormatter.WriterInstance, false);
+            return new StringValue(serializedString);
         }
 
         private Structure Parse(StringValue json)
         {
-            return JsonUtility.FromJson<Structure>(json);
+            return SimpleJsonFormatter.ReaderInstance.Read(json);
         }
     }
 }
