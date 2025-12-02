@@ -1,10 +1,8 @@
 ﻿using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Exceptions;
-using kOS.Safe.Persistence;
 using kOS.Safe.Serialization;
 using System;
-using UnityEngine;
 
 namespace kOS.AddOns.Json
 {
@@ -42,7 +40,14 @@ namespace kOS.AddOns.Json
 
         private Structure Parse(StringValue json)
         {
-            return SimpleJsonFormatter.ReaderInstance.Read(json);
+            try
+            {
+                return SimpleJsonFormatter.ReaderInstance.Read(json);
+            }
+            catch (ArgumentNullException)
+            {
+                throw new KOSInvalidArgumentException("PARSE","json" , "The provided JSON string is null");
+            }
         }
     }
 }
