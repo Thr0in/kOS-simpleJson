@@ -1,15 +1,12 @@
-﻿using JetBrains.Annotations;
-using kOS.Safe;
+﻿using kOS.Safe;
 using kOS.Safe.Encapsulation;
 using kOS.Safe.Exceptions;
 using kOS.Safe.Serialization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Nodes;
 using UnityEngine;
-using static FileIO;
-using static GameEvents;
 using JsonArray = kOS.Safe.JsonArray;
 using JsonObject = kOS.Safe.JsonObject;
 
@@ -72,7 +69,7 @@ namespace kOS.AddOns.Json
         private Structure ToKosStructure(object obj)
         {
             if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
+                return new StringValue("");
 
             switch (obj)
             {
@@ -107,7 +104,7 @@ namespace kOS.AddOns.Json
 
 
                 default:
-                    return new StringValue("Original value failed to deserialize");
+                    throw new KOSSerializationException("Original value failed to deserialize. Please create a bug report. " + obj);
             }
         }
 
@@ -147,43 +144,51 @@ namespace kOS.AddOns.Json
             return result;
         }
 
+        /// <summary>
+        /// Deserializes a JSON-formatted string into an object representing the corresponding JSON value.
+        /// </summary>
+        /// <remarks>The returned object type depends on the structure of the input JSON string. If the
+        /// input does not match a recognized JSON type, the method returns null.</remarks>
+        /// <param name="input">The JSON string to deserialize. Leading and trailing whitespace is ignored. Cannot be null or empty.</param>
+        /// <returns>An object representing the deserialized JSON value. The return type may be a JsonObject for JSON objects, a
+        /// JsonArray for arrays, a string for JSON strings, or a Boolean for the literals "true" and "false". Returns
+        /// null if the input is "null" or if the input does not match a recognized JSON type.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is null.</exception>
         private object Deserialize(string input)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
 
-            input = input.TrimStart();
+            input = input.Trim();
             if (input.Length == 0)
-                throw new KOSInvalidArgumentException("placeholder", "propagate through later", "Input is empty");
-
-            object deserialized = null;
+                return input;
 
             string first = input.Substring(0, 1);
             switch (first)
             {
                 case "{":
-                    deserialized = SimpleJson.DeserializeObject<JsonObject>(input);
-                    break;
+                    return SimpleJson.DeserializeObject<JsonObject>(input);
 
                 case "[":
-                    deserialized = SimpleJson.DeserializeObject<JsonArray>(input);
-                    break;
+                    return SimpleJson.DeserializeObject<JsonArray>(input);
 
                 case "\"":
-                    deserialized = SimpleJson.DeserializeObject<string>(input);
-                    break;
+                    return SimpleJson.DeserializeObject<string>(input);
 
                 default:
                     if (input == "true" || input == "false")
-                        deserialized = input == "true";
+                            return input == "true";
+
+                    if (int.TryParse(input, out int intNumber))
+                        return intNumber;
+                    if (double.TryParse(input, out double number))
+                        return number;
 
                     if (input == "null")
-                        Debug.Log("Parsed JSON data is null");
+                        return null;
 
-                    Debug.Log("Fell through");
-                    break;
+                    return input;
             }
-            return deserialized;
         }
 
         /// <summary>
@@ -197,23 +202,28 @@ namespace kOS.AddOns.Json
         /// kOS JSON type.</exception>
         private string Serialize(Dump dump)
         {
-            object value = null;
-            var keys = dump.Keys.Where(k => k != "$type");// First();
+            // Filter out the $type key used in kOS JSON dumps
+            var keys = dump.Keys.Where(k => k as string != "$type");
 
+            // In case of multiple keys, we serialize the entire dictionary
+            // Needed for pidloops and ranges
             if (keys.Count() > 1)
             {
-                return SerializeDictionary(dump as Dictionary<object, object>);
+                return SerializeDictionary(dump);
             }
-            var key = keys.ElementAt(0);
 
-            if (!dump.TryGetValue(key, out value))
+            // All kOS JSON dumps should have exactly one key (other than $type)
+            var key = keys.ElementAt(0);
+            if (!dump.TryGetValue(key, out object value))
                 throw new KOSSerializationException("No value present in kOS JSON data: " + key);
 
             switch (key)
             {
+                // All primitive values are stored under "value"
                 case "value":
                     return SimpleJson.SerializeObject(value);
 
+                // All array like structures are stored under "Items"
                 case kOS.Safe.Dump.Items:
                     if (value is List<object>)
                     {
@@ -221,6 +231,7 @@ namespace kOS.AddOns.Json
                     }
                     return "[]";
 
+                // All object like structures are stored under "Entries"
                 case kOS.Safe.Dump.Entries:
                     if (value is List<object>)
                     {
@@ -229,7 +240,7 @@ namespace kOS.AddOns.Json
                     return "{}";
 
                 default:
-                    throw new KOSSerializationException("Invalid key in kOS JSON data: " + key);
+                    throw new KOSSerializationException("Invalid key in kOS JSON data: " + key + " \n Please create a bug report.");
             }
         }
 
@@ -274,12 +285,21 @@ namespace kOS.AddOns.Json
             return "{" + string.Join(",", result) + "}";
         }
 
+        /// <summary>
+        /// Serializes the specified dictionary into a JSON string representation.
+        /// </summary>
+        /// <remarks>If a value in the dictionary is itself a dictionary, it will be serialized
+        /// recursively. Keys are converted to their string representation using ToString().
+        /// At the time of creation this is only needed for serializing pidloops and ranges.</remarks>
+        /// <param name="dict">The dictionary containing key-value pairs to serialize. Keys are converted to strings; values may be
+        /// serialized recursively if they are dictionaries.</param>
+        /// <returns>A JSON-formatted string representing the contents of the dictionary.</returns>
         private string SerializeDictionary(Dictionary<object, object> dict)
         {
             JsonObject result = new JsonObject();
             foreach (var keyValue in dict)
             {
-                result[keyValue.Key.ToString()] = keyValue.Value;
+                result[keyValue.Key.ToString()] = keyValue.Value is IDictionary ? Serialize(keyValue.Value as Dump) : keyValue.Value;
             }
             return SimpleJson.SerializeObject(result);
         }
