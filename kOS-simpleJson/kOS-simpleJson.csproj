@@ -7,8 +7,8 @@
     <ProjectGuid>{732975DB-205A-4810-95B5-AE06A8C863F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>kOS_json_addon</RootNamespace>
-    <AssemblyName>kOS-json-addon</AssemblyName>
+    <RootNamespace>kOS_simpleJson</RootNamespace>
+    <AssemblyName>kOS-simpleJson</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
