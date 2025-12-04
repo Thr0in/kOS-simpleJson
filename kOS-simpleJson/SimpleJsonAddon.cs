@@ -42,7 +42,7 @@ namespace kOS.AddOns.Json
         {
             try
             {
-                return SimpleJsonFormatter.ReaderInstance.Read(json);
+                return JsonDeserializer.ReaderInstance.Deserialize(json);
             }
             catch (ArgumentNullException)
             {
