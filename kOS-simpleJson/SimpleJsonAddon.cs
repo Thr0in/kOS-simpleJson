@@ -31,12 +31,8 @@ namespace kOS.AddOns.Json
 
         private StringValue Stringify(Structure obj)
         {
-            SerializableStructure serialized = obj as SerializableStructure;
+            SerializableStructure serialized = obj as SerializableStructure ?? throw new KOSException("This type is not serializable");
 
-            if (serialized == null)
-            {
-                throw new KOSException("This type is not serializable");
-            }
             string serializedString = new SafeSerializationMgr(shared).Serialize(serialized, SimpleJsonFormatter.WriterInstance, false);
             return new StringValue(serializedString);
         }
@@ -73,7 +69,7 @@ namespace kOS.AddOns.Json
             }
             catch (Exception)
             {
-                return elseFunc.CallWithArgsPushedAlready();
+                return elseFunc.CallPassingArgs();
             }
         }
 
