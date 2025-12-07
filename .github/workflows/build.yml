@@ -1,0 +1,15 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    uses: Thr0in/KSPBuildTools/.github/workflows/build.yml@main
+    with:
+      use-ckan: true
+      artifacts: GameData

@@ -1,0 +1,19 @@
+{
+  "NAME": "kOS-simpleJson",
+  "URL": "https://raw.githubusercontent.com/Thr0in/kOS-simpleJson/main/GameData/kOS-simpleJson/kOS-simpleJson.version",
+  "DOWNLOAD": "https://github.com/Thr0in/kOS-simpleJson/releases/latest",
+  "GITHUB": {
+    "USERNAME": "Thr0in",
+    "REPOSITORY": "kOS-simpleJson",
+    "ALLOW_PRE_RELEASE": false
+  },
+  "VERSION": {
+    "MAJOR": @VERSION_MAJOR@,
+    "MINOR": @VERSION_MINOR@,
+    "PATCH": @VERSION_PATCH@,
+    "BUILD": @VERSION_BUILD@
+  },
+  "KSP_VERSION": "1.12",
+  "KSP_VERSION_MIN": "1.8",
+  "KSP_VERSION_MAX": "1.12"
+}
