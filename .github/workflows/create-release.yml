@@ -1,0 +1,18 @@
+name: create-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version-string:
+        type: string
+        required: true
+
+jobs:
+  create-release:
+    permissions:
+      contents: write
+    uses: Thr0in/KSPBuildTools/.github/workflows/create-release.yml@main
+    with:
+        use-ckan: true
+        version-string: ${{ inputs.version-string }}
+        artifacts: GameData
