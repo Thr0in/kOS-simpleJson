@@ -115,7 +115,6 @@ namespace kOS.AddOns.Json
             ListValue result = new ListValue();
             foreach (var item in jsonArray)
             {
-                Debug.Log("Item: " + item + " type: " + item.GetType());
                 result.Add(ToKosStructure(item));
             }
             return result;

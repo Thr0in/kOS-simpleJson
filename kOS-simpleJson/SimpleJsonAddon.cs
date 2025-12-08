@@ -55,7 +55,11 @@ namespace kOS.AddOns.Json
             {
                 return Parse(json);
             }
-            catch (Exception)
+            catch (KOSException)
+            {
+                return elseValue;
+            }
+            catch (ArgumentNullException)
             {
                 return elseValue;
             }
@@ -67,7 +71,11 @@ namespace kOS.AddOns.Json
             {
                 return Parse(json);
             }
-            catch (Exception)
+            catch (KOSException)
+            {
+                return elseFunc.CallPassingArgs();
+            }
+            catch (ArgumentNullException)
             {
                 return elseFunc.CallPassingArgs();
             }
@@ -80,10 +88,13 @@ namespace kOS.AddOns.Json
                 Parse(json);
                 return true;
             }
-            catch (Exception)
+            catch (KOSException)
             {
                 return false;
             }
-        }
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
     }
 }
