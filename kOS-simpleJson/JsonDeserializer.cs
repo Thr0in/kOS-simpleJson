@@ -98,7 +98,6 @@ namespace kOS.AddOns.Json
             Lexicon result = new Lexicon();
             foreach (var key in jsonObject.Keys)
             {
-                Debug.Log("Key: " + key + " value: " + jsonObject[key] + " type: " + jsonObject[key].GetType());
                 result[new StringValue(key)] = ToKosStructure(jsonObject[key]);
             }
             return result;
