@@ -3,7 +3,6 @@ using kOS.Safe.Encapsulation;
 using kOS.Safe.Exceptions;
 using System;
 using System.Runtime.Serialization;
-using UnityEngine;
 using JsonArray = kOS.Safe.JsonArray;
 using JsonObject = kOS.Safe.JsonObject;
 
