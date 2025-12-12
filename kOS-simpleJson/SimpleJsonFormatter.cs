@@ -1,6 +1,8 @@
 ﻿using kOS.Safe;
+using kOS.Safe.Encapsulation;
 using kOS.Safe.Exceptions;
 using kOS.Safe.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace kOS.AddOns.Json
     {
         private static readonly SimpleJsonFormatter instance;
 
-        public static IFormatWriter WriterInstance
+        public static SimpleJsonFormatter WriterInstance
         {
             get
             {
@@ -39,6 +41,28 @@ namespace kOS.AddOns.Json
         }
 
         /// <summary>
+        /// Determines whether the specified dump can be successfully serialized to a string representation.
+        /// </summary>
+        /// <remarks>This method attempts to serialize the provided dump and returns a BooleanValue
+        /// indicating success or failure. No exception is thrown if serialization fails; instead, the result is <see
+        /// langword="false"/>.</remarks>
+        /// <param name="dump">The dump object to test for stringifiability.</param>
+        /// <returns>A BooleanValue that is <see langword="true"/> if the dump can be serialized; otherwise, <see
+        /// langword="false"/>.</returns>
+        public BooleanValue IsStringifiable(Dump dump)
+        {
+            try
+            {
+                Serialize(dump);
+                return new BooleanValue(true);
+            }
+            catch (Exception)
+            {
+                return new BooleanValue(false);
+            }
+        }
+
+        /// <summary>
         /// Serializes the specified kOS JSON dump into a JSON string representation based on its structure.
         /// </summary>
         /// <param name="dump">The kOS JSON dump to serialize. Must contain a recognized key indicating the data type ('value', 'Items', or
@@ -50,7 +74,7 @@ namespace kOS.AddOns.Json
         private string Serialize(Dump dump)
         {
             // Filter out the $type key used in kOS JSON dumps
-            var keys = dump.Keys.Where(k => k as string != "$type");
+            var keys = dump.Keys.Where(k => k as string != SafeSerializationMgr.TYPE_KEY);
 
             // In case of multiple keys, we serialize the entire dictionary
             // Needed for pidloops and ranges
