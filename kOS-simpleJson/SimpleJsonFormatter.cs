@@ -127,6 +127,10 @@ namespace kOS.AddOns.Json
                 string objectKey = Serialize(keyValueList[i] as Dump) as string;
                 if (objectKey == null)
                     throw new KOSSerializationException("Key of object-like is not a string: " + objectKey);
+                if (!(objectKey.StartsWith("\"") && objectKey.EndsWith("\"")))
+                {
+                    throw new KOSSerializationException("Key of object-like is not a string: " + objectKey);
+                }
                 result.Add($"{objectKey}:{Serialize(keyValueList[i + 1] as Dump)}");
             }
             return "{" + string.Join(",", result) + "}";

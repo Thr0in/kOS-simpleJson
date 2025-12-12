@@ -45,6 +45,7 @@ The addon provides several functions accessible through the base path `ADDONS:JS
 ### STRINGIFY
 
 Converts a kOS structure to a JSON string. Works with kOS-serializable structures (Lexicons, Lists, primitives, PID loops, ranges).
+Keys of object-like structures must be strings.
 
 ```kerboscript
 // Stringify a lexicon
@@ -100,7 +101,7 @@ PRINT data["name"].    // Output: Fallback
 ### PARSEORELSEGET
 
 Parses a JSON string, or calls a delegate to produce a fallback when parsing fails.
-The delegate function is only called if parsing the given JSON fails
+The delegate function is only called if parsing the given JSON fails.
 
 ```kerboscript
 DECLARE FUNCTION BuildDefault {
