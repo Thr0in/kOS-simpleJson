@@ -81,7 +81,6 @@ namespace kOS.AddOns.Json
                 case bool b:
                     return new BooleanValue(b);
 
-
                 default:
                     throw new KOSSerializationException("Original value failed to deserialize. Please create a bug report. " + obj);
             }
