@@ -3,7 +3,6 @@ using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Exceptions;
 using kOS.Safe.Serialization;
 using System;
-using System.Linq.Expressions;
 using System.Runtime.Serialization;
 
 namespace kOS.AddOns.Json
@@ -14,7 +13,7 @@ namespace kOS.AddOns.Json
     {
         public SimpleJsonAddon(SharedObjects shared) : base(shared)
         {
-            InitializeSufixes();
+            InitializeSuffixes();
         }
 
         public override BooleanValue Available()
@@ -22,7 +21,7 @@ namespace kOS.AddOns.Json
             return true;
         }
 
-        private void InitializeSufixes()
+        private void InitializeSuffixes()
         {
             AddSuffix("STRINGIFY", new OneArgsSuffix<StringValue, Structure>(Stringify, "Get a json string for an object."));
             AddSuffix("PARSE", new OneArgsSuffix<Structure, StringValue>(Parse, "Get an object from a json string."));

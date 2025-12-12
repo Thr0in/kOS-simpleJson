@@ -114,7 +114,7 @@ PRINT data["status"].   // Output: unknown
 
 ### ISPARSEABLE
 
-Checks if a string can be parsed as JSON without throwing.
+Checks if a string can be parsed as JSON without throwing in kOS.
 
 ```kerboscript
 SET candidate TO "{""value"":1}".
@@ -203,7 +203,7 @@ SET loadedConfig TO ADDONS:JSON:PARSE(loadedJson).
 
 ## Technical Details
 
-The addon implements the [`IFormatWriter`](https://github.com/KSP-KOS/KOS/blob/9d896ace93adca5e13c915a06f886e4e23761d0b/src/kOS.Safe/Serialization/Formatter.cs) interface from kOS.Safe.Serialization, using the [`SimpleJsonFormatter`](kOS-simpleJson/SimpleJsonFormatter.cs) class to handle serialization. Deserialization is handled by the [JsonDeserializer](kOS-simpleJson/JsonDeserializer.cs) skipping the conversion to dumps. The main entry point is the [`SimpleJsonAddon`](kOS-simpleJson/SimpleJsonAddon.cs) class, which is decorated with the `[kOSAddon("JSON")]` attribute to register it with kOS.
+The addon implements the [`IFormatWriter`](https://github.com/KSP-KOS/KOS/blob/9d896ace93adca5e13c915a06f886e4e23761d0b/src/kOS.Safe/Serialization/Formatter.cs) interface from kOS.Safe.Serialization, using the [`SimpleJsonFormatter`](kOS-simpleJson/SimpleJsonFormatter.cs) class to handle serialization. Deserialization is handled by the [JsonDeserializer](kOS-simpleJson/JsonDeserializer.cs), skipping the conversion to dumps. The main entry point is the [`SimpleJsonAddon`](kOS-simpleJson/SimpleJsonAddon.cs) class, which is decorated with the `[kOSAddon("JSON")]` attribute to register it with kOS.
 
 ## Known Limitations
 

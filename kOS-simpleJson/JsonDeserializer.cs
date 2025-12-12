@@ -43,9 +43,8 @@ namespace kOS.AddOns.Json
         /// </summary>
         /// <remarks>This method does not throw an exception for invalid input. It returns false if the
         /// input cannot be parsed due to format errors or unsupported types.</remarks>
-        /// <param name="input">The string to test for JSON parseability. Must not be null. If <c>null</c>, an <see cref="ArgumentNullException"/> is thrown.</param>
+        /// <param name="input">The string to test for JSON parseability. May be null. If <c>null</c>, returns false.</param>
         /// <returns>true if the input string can be parsed as valid JSON; otherwise, false.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="input"/> is <c>null</c>.</exception>
         public BooleanValue IsParseable(string input)
         {
             try
@@ -65,6 +64,7 @@ namespace kOS.AddOns.Json
         /// </summary>
         /// <param name="obj">The deserialized JSON value to convert.</param>
         /// <returns>A kOS <see cref="Structure"/> representation of the input value.</returns>
+        /// <exception cref="KOSSerializationException">Thrown when the input can't be converted to any kOS structure.</exception>
         private Structure ToKosStructure(object obj)
         {
             if (obj == null)
@@ -107,11 +107,11 @@ namespace kOS.AddOns.Json
         }
 
         /// <summary>
-        /// Converts the specified JSON object to a Kos Lexicon, mapping each key-value pair to the corresponding
+        /// Converts the specified <see cref="JsonObject"/>> to a Kos <see cref="Lexicon"/>, mapping each key-value pair to the corresponding
         /// Lexicon entry.
         /// </summary>
         /// <param name="jsonObject">The JSON object containing key-value pairs to be converted. Cannot be null.</param>
-        /// <returns>A Lexicon instance containing entries for each key in the JSON object, with values converted to Kos
+        /// <returns>A <see cref="Lexicon"/> instance containing entries for each key in the JSON object, with values converted to Kos
         /// structures.</returns>
         private Lexicon ToKosLexicon(JsonObject jsonObject)
         {
@@ -169,7 +169,7 @@ namespace kOS.AddOns.Json
         private object ParseJsonString(string input)
         {
             if (input == null)
-                throw new ArgumentNullException($"Input is invalid: '{input}'");
+                throw new ArgumentNullException(nameof(input));
 
             input = input.Trim();
             if (input.Length == 0)
