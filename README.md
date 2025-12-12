@@ -100,7 +100,7 @@ PRINT data["name"].    // Output: Fallback
 ### PARSEORELSEGET
 
 Parses a JSON string, or calls a delegate to produce a fallback when parsing fails.
-The delegate function is only called if parsing the given JSON fails
+The delegate function is only called if parsing the given JSON fails.
 
 ```kerboscript
 DECLARE FUNCTION BuildDefault {

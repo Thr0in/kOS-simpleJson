@@ -2,6 +2,7 @@
 using kOS.Safe.Encapsulation;
 using kOS.Safe.Exceptions;
 using System;
+using System.Runtime.Serialization;
 using UnityEngine;
 using JsonArray = kOS.Safe.JsonArray;
 using JsonObject = kOS.Safe.JsonObject;
@@ -130,6 +131,9 @@ namespace kOS.AddOns.Json
         /// JsonArray for arrays, a string for JSON strings, or a Boolean for the literals "true" and "false". Returns
         /// null if the input is "null" or if the input does not match a recognized JSON type.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is null.</exception>
+        /// <exception cref="SerializationException">Thrown if the JSON string is invalid or malformed.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the JSON contains invalid Unicode escape sequences.</exception>
+        /// <exception cref="InvalidCastException">Thrown if the deserialized object cannot be cast to the expected type.</exception>
         private object ParseJsonString(string input)
         {
             if (input == null)
