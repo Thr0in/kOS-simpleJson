@@ -40,6 +40,26 @@ namespace kOS.AddOns.Json
         }
 
         /// <summary>
+        /// Determines whether the specified string can be successfully parsed as a valid JSON value.
+        /// </summary>
+        /// <remarks>This method does not throw an exception for invalid input. It returns false if the
+        /// input cannot be parsed due to format errors or unsupported types.</remarks>
+        /// <param name="input">The string to test for JSON parseability. Cannot be null.</param>
+        /// <returns>true if the input string can be parsed as valid JSON; otherwise, false.</returns>
+        public BooleanValue IsParseable(string input)
+        {
+            try
+            {
+                ParseJsonString(input);
+                return new BooleanValue(true);
+            }
+            catch (Exception)
+            {
+                return new BooleanValue(false);
+            }
+        }
+
+        /// <summary>
         /// Converts a deserialized JSON token into a kOS <see cref="Structure"/> instance.
         /// Handles JSON objects, arrays, strings, numbers and booleans and provides robust handling for numeric ranges.
         /// </summary>
