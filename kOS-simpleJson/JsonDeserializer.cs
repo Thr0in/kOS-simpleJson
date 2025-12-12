@@ -43,8 +43,9 @@ namespace kOS.AddOns.Json
         /// </summary>
         /// <remarks>This method does not throw an exception for invalid input. It returns false if the
         /// input cannot be parsed due to format errors or unsupported types.</remarks>
-        /// <param name="input">The string to test for JSON parseability. Cannot be null.</param>
+        /// <param name="input">The string to test for JSON parseability. Must not be null. If <c>null</c>, an <see cref="ArgumentNullException"/> is thrown.</param>
         /// <returns>true if the input string can be parsed as valid JSON; otherwise, false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="input"/> is <c>null</c>.</exception>
         public BooleanValue IsParseable(string input)
         {
             try
@@ -142,24 +143,37 @@ namespace kOS.AddOns.Json
         /// <summary>
         /// Deserializes a JSON-formatted string into an object representing the corresponding JSON value.
         /// </summary>
-        /// <remarks>The returned object type depends on the structure of the input JSON string. If the
-        /// input does not match a recognized JSON type, the method returns null.</remarks>
-        /// <param name="input">The JSON string to deserialize. Leading and trailing whitespace is ignored. Cannot be null or empty.</param>
-        /// <returns>An object representing the deserialized JSON value. The return type may be a JsonObject for JSON objects, a
-        /// JsonArray for arrays, a string for JSON strings, or a Boolean for the literals "true" and "false". Returns
-        /// null if the input is "null" or if the input does not match a recognized JSON type.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is null.</exception>
-        /// <exception cref="SerializationException">Thrown if the JSON string is invalid or malformed.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if the JSON contains invalid Unicode escape sequences.</exception>
-        /// <exception cref="InvalidCastException">Thrown if the deserialized object cannot be cast to the expected type.</exception>
+        /// <remarks>
+        /// This method parses JSON strings and returns the corresponding object representation.
+        /// Leading and trailing whitespace is automatically trimmed before parsing.
+        /// Supported JSON types include objects, arrays, strings, numbers, booleans, and null.
+        /// Primitive values (numbers and booleans) that are not enclosed in quotes are also supported.
+        /// </remarks>
+        /// <param name="input">The JSON string to deserialize. Cannot be null or empty after trimming whitespace.</param>
+        /// <returns>
+        /// An object representing the deserialized JSON value:
+        /// <list type="bullet">
+        /// <item><description><see cref="JsonObject"/> for JSON objects (e.g., <c>{"key": "value"}</c>)</description></item>
+        /// <item><description><see cref="JsonArray"/> for JSON arrays (e.g., <c>[1, 2, 3]</c>)</description></item>
+        /// <item><description><see cref="string"/> for JSON strings (e.g., <c>"text"</c>)</description></item>
+        /// <item><description><see cref="int"/> or <see cref="double"/> for JSON numbers (e.g., <c>42</c>, <c>3.14</c>)</description></item>
+        /// <item><description><see cref="bool"/> for JSON booleans (e.g., <c>true</c>, <c>false</c>)</description></item>
+        /// <item><description><c>null</c> for the JSON literal <c>null</c></description></item>
+        /// </list>
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="input"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when the input string is empty after trimming, or when the input does not represent a valid JSON value.</exception>
+        /// <exception cref="SerializationException">Thrown when the JSON string is malformed or contains invalid syntax.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the JSON contains invalid Unicode escape sequences (e.g., invalid surrogate pairs).</exception>
+        /// <exception cref="InvalidCastException">Thrown when the deserialized object cannot be cast to the expected type.</exception>
         private object ParseJsonString(string input)
         {
             if (input == null)
-                throw new ArgumentNullException(nameof(input));
+                throw new ArgumentNullException($"Input is invalid: '{input}'");
 
             input = input.Trim();
             if (input.Length == 0)
-                return input;
+                throw new ArgumentException("Input string is empty. An empty string is not valid JSON.");
 
             string first = input.Substring(0, 1);
             switch (first)
@@ -185,7 +199,7 @@ namespace kOS.AddOns.Json
                     if (input == "null")
                         return null;
 
-                    return input;
+                    throw new ArgumentException($"Input is not valid JSON: '{input}'");
             }
         }
     }

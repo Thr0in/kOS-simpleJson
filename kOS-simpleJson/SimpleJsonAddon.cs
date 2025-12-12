@@ -3,6 +3,7 @@ using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Exceptions;
 using kOS.Safe.Serialization;
 using System;
+using System.Linq.Expressions;
 using System.Runtime.Serialization;
 
 namespace kOS.AddOns.Json
@@ -44,17 +45,17 @@ namespace kOS.AddOns.Json
             {
                 return JsonDeserializer.ReaderInstance.Deserialize(json);
             }
-            catch (ArgumentNullException)
+            catch (ArgumentOutOfRangeException ex)
             {
-                throw new KOSInvalidArgumentException("PARSE", "json", "The provided JSON string is null");
+                throw new KOSInvalidArgumentException("PARSE", "json", "Invalid Unicode escape sequence in JSON: " + ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new KOSInvalidArgumentException("PARSE", "json", ex.Message);
             }
             catch (SerializationException ex)
             {
                 throw new KOSSerializationException("Invalid JSON format: " + ex.Message);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                throw new KOSSerializationException("Invalid Unicode escape sequence in JSON: " + ex.Message);
             }
             catch (InvalidCastException ex)
             {
@@ -86,21 +87,38 @@ namespace kOS.AddOns.Json
             }
             catch (KOSException)
             {
+                object result;
                 try
                 {
-                    var result = elseFunc.CallPassingArgs();
-                    if (result is Structure structureResult)
-                    {
-                        return structureResult;
-                    }
-                    else
-                    {
-                        throw new KOSException("Delegate provided to PARSEORELSEGET did not return a valid Structure.");
-                    }
+                    result = elseFunc.CallPassingArgs();
+                }
+                catch (KOSException kosEx)
+                {
+                    // Re-throw KOSExceptions from the delegate as-is to preserve context
+                    throw new KOSException("Delegate provided to PARSEORELSEGET threw a KOS exception: " + kosEx.Message, kosEx);
                 }
                 catch (Exception ex)
                 {
                     throw new KOSException("Delegate provided to PARSEORELSEGET threw an exception.", ex);
+                }
+
+                if (result == null)
+                {
+                    throw new KOSException("Delegate provided to PARSEORELSEGET returned null.");
+                }
+
+                if (result is Structure structureResult)
+                {
+                    return structureResult;
+                }
+
+                try
+                {
+                    return Structure.FromPrimitiveWithAssert(result);
+                }
+                catch (KOSException)
+                {
+                    throw new KOSException($"Delegate provided to PARSEORELSEGET returned an invalid type: {result.GetType().Name}. Expected a Structure.");
                 }
             }
         }
