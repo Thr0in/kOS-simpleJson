@@ -86,7 +86,22 @@ namespace kOS.AddOns.Json
             }
             catch (KOSException)
             {
-                return elseFunc.CallPassingArgs();
+                try
+                {
+                    var result = elseFunc.CallPassingArgs();
+                    if (result is Structure structureResult)
+                    {
+                        return structureResult;
+                    }
+                    else
+                    {
+                        throw new KOSException("Delegate provided to PARSEORELSEGET did not return a valid Structure.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new KOSException("Delegate provided to PARSEORELSEGET threw an exception.", ex);
+                }
             }
         }
 
