@@ -12,7 +12,7 @@ namespace kOS.AddOns.Json
 {
     public class SimpleJsonFormatter : IFormatWriter
     {
-        private static readonly SimpleJsonFormatter instance;
+        private static readonly SimpleJsonFormatter instance = new SimpleJsonFormatter();
 
         public static SimpleJsonFormatter WriterInstance
         {
@@ -25,19 +25,14 @@ namespace kOS.AddOns.Json
         private SimpleJsonFormatter()
         { }
 
-        static SimpleJsonFormatter()
-        {
-            instance = new SimpleJsonFormatter();
-        }
-
         /// <summary>
         /// Serializes the specified dump object to its string representation.
         /// </summary>
-        /// <param name="dump">The dump object to serialize. Cannot be null.</param>
+        /// <param name="value">The dump object to serialize. Cannot be null.</param>
         /// <returns>A string containing the serialized representation of the dump object.</returns>
-        public string Write(Dump dump)
+        public string Write(Dump value)
         {
-            return Serialize(dump); 
+            return Serialize(value);
         }
 
         /// <summary>
@@ -96,17 +91,17 @@ namespace kOS.AddOns.Json
 
                 // All array like structures are stored under "Items"
                 case kOS.Safe.Dump.Items:
-                    if (value is List<object>)
+                    if (value is List<object> arrayList)
                     {
-                        return SerializeArrayLike(value as List<object>);
+                        return SerializeArrayLike(arrayList);
                     }
                     return "[]";
 
                 // All object like structures are stored under "Entries"
                 case kOS.Safe.Dump.Entries:
-                    if (value is List<object>)
+                    if (value is List<object> objectList)
                     {
-                        return SerializeObjectLike(value as List<object>);
+                        return SerializeObjectLike(objectList);
                     }
                     return "{}";
 
@@ -146,9 +141,9 @@ namespace kOS.AddOns.Json
         private string SerializeObjectLike(List<object> keyValueList)
         {
             List<string> result = new List<string>();
-            for (int i = 0; i < keyValueList.Count(); i += 2)
+            for (int i = 0; i < keyValueList.Count; i += 2)
             {
-                string objectKey = Serialize(keyValueList[i] as Dump) as string;
+                string objectKey = Serialize(keyValueList[i] as Dump);
                 if (objectKey == null)
                     throw new KOSSerializationException("Key of object-like is not a string: " + objectKey);
                 if (!(objectKey.StartsWith("\"") && objectKey.EndsWith("\"")))

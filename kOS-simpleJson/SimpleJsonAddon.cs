@@ -51,12 +51,12 @@ namespace kOS.AddOns.Json
                 return SimpleJsonFormatter.WriterInstance.IsStringifiable(dump);
             }
             catch (Exception)
-                        {
+            {
                 return new BooleanValue(false);
             }
         }
 
-        private Structure Parse(StringValue json)
+        private static Structure Parse(StringValue json)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace kOS.AddOns.Json
             }
         }
 
-        private Structure ParseOrElse(StringValue json, Structure elseValue)
+        private static Structure ParseOrElse(StringValue json, Structure elseValue)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace kOS.AddOns.Json
             }
         }
 
-        private Structure ParseOrElseGet(StringValue json, KOSDelegate elseFunc)
+        private static Structure ParseOrElseGet(StringValue json, KOSDelegate elseFunc)
         {
             try
             {
@@ -140,9 +140,9 @@ namespace kOS.AddOns.Json
             }
         }
 
-        private BooleanValue IsParseable(StringValue json)
+        private static BooleanValue IsParseable(StringValue json)
         {
-            return JsonDeserializer.ReaderInstance.IsParseable(json);
+            return JsonDeserializer.IsParseable(json);
         }
     }
 }
