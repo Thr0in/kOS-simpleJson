@@ -107,7 +107,7 @@ DECLARE FUNCTION BuildDefault {
     RETURN LEXICON("status", "unknown", "tries", 1).
 }.
 SET maybeJson TO "}not-json{".
-SET data TO ADDONS:JSON:PARSEORELSEGET(maybeJson, BuildDefault).
+SET data TO ADDONS:JSON:PARSEORELSEGET(maybeJson, BuildDefault@).
 PRINT data["status"].   // Output: unknown
 ```
 

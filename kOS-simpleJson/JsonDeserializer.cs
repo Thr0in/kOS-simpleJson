@@ -3,7 +3,6 @@ using kOS.Safe.Encapsulation;
 using kOS.Safe.Exceptions;
 using System;
 using System.Runtime.Serialization;
-using UnityEngine;
 using JsonArray = kOS.Safe.JsonArray;
 using JsonObject = kOS.Safe.JsonObject;
 
@@ -100,7 +99,6 @@ namespace kOS.AddOns.Json
 
                 case bool b:
                     return new BooleanValue(b);
-
 
                 default:
                     throw new KOSSerializationException("Original value failed to deserialize. Please create a bug report. " + obj);
