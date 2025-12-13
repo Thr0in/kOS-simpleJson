@@ -71,7 +71,7 @@ PRINT ADDONS:JSON:STRINGIFY(True).      // Output: true
 Checks if a structure can be serialized to JSON without throwing.
 
 ```kerboscript
-SET myLex TO LEXICON(0, ""<-- invalid key"", ""name"", ""Rocket"", ""altitude"", 1000).
+SET myLex TO LEXICON(0, "<-- invalid key", "name", "Rocket", "altitude", 1000).
 IF ADDONS:JSON:ISSTRINGIFIABLE(myLex) {
     SET jsonString TO ADDONS:JSON:STRINGIFY(myLex).
     PRINT jsonString.
