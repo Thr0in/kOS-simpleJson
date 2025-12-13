@@ -10,7 +10,7 @@ namespace kOS.AddOns.Json
 {
     public class JsonDeserializer
     {
-        private static readonly JsonDeserializer instance;
+        private static readonly JsonDeserializer instance = new JsonDeserializer();
 
         public static JsonDeserializer ReaderInstance
         {
@@ -22,11 +22,6 @@ namespace kOS.AddOns.Json
 
         private JsonDeserializer()
         { }
-
-        static JsonDeserializer()
-        {
-            instance = new JsonDeserializer();
-        }
 
         /// <summary>
         /// Parses the specified input string and returns its corresponding structured representation.
@@ -45,7 +40,7 @@ namespace kOS.AddOns.Json
         /// input cannot be parsed due to format errors or unsupported types.</remarks>
         /// <param name="input">The string to test for JSON parseability. May be null. If <c>null</c>, returns false.</param>
         /// <returns>true if the input string can be parsed as valid JSON; otherwise, false.</returns>
-        public BooleanValue IsParseable(string input)
+        public static BooleanValue IsParseable(string input)
         {
             try
             {
@@ -166,7 +161,7 @@ namespace kOS.AddOns.Json
         /// <exception cref="SerializationException">Thrown when the JSON string is malformed or contains invalid syntax.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the JSON contains invalid Unicode escape sequences (e.g., invalid surrogate pairs).</exception>
         /// <exception cref="InvalidCastException">Thrown when the deserialized object cannot be cast to the expected type.</exception>
-        private object ParseJsonString(string input)
+        private static object ParseJsonString(string input)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));

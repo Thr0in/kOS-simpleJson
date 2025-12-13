@@ -1,6 +1,8 @@
 ﻿using kOS.Safe;
+using kOS.Safe.Encapsulation;
 using kOS.Safe.Exceptions;
 using kOS.Safe.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +12,9 @@ namespace kOS.AddOns.Json
 {
     public class SimpleJsonFormatter : IFormatWriter
     {
-        private static readonly SimpleJsonFormatter instance;
+        private static readonly SimpleJsonFormatter instance = new SimpleJsonFormatter();
 
-        public static IFormatWriter WriterInstance
+        public static SimpleJsonFormatter WriterInstance
         {
             get
             {
@@ -23,19 +25,36 @@ namespace kOS.AddOns.Json
         private SimpleJsonFormatter()
         { }
 
-        static SimpleJsonFormatter()
-        {
-            instance = new SimpleJsonFormatter();
-        }
-
         /// <summary>
         /// Serializes the specified dump object to its string representation.
         /// </summary>
-        /// <param name="dump">The dump object to serialize. Cannot be null.</param>
+        /// <param name="value">The dump object to serialize. Cannot be null.</param>
         /// <returns>A string containing the serialized representation of the dump object.</returns>
-        public string Write(Dump dump)
+        public string Write(Dump value)
         {
-            return Serialize(dump); 
+            return Serialize(value);
+        }
+
+        /// <summary>
+        /// Determines whether the specified dump can be successfully serialized to a string representation.
+        /// </summary>
+        /// <remarks>This method attempts to serialize the provided dump and returns a BooleanValue
+        /// indicating success or failure. No exception is thrown if serialization fails; instead, the result is <see
+        /// langword="false"/>.</remarks>
+        /// <param name="dump">The dump object to test for stringifiability.</param>
+        /// <returns>A BooleanValue that is <see langword="true"/> if the dump can be serialized; otherwise, <see
+        /// langword="false"/>.</returns>
+        public BooleanValue IsStringifiable(Dump dump)
+        {
+            try
+            {
+                Serialize(dump);
+                return new BooleanValue(true);
+            }
+            catch (Exception)
+            {
+                return new BooleanValue(false);
+            }
         }
 
         /// <summary>
@@ -50,7 +69,7 @@ namespace kOS.AddOns.Json
         private string Serialize(Dump dump)
         {
             // Filter out the $type key used in kOS JSON dumps
-            var keys = dump.Keys.Where(k => k as string != "$type");
+            var keys = dump.Keys.Where(k => k as string != SafeSerializationMgr.TYPE_KEY);
 
             // In case of multiple keys, we serialize the entire dictionary
             // Needed for pidloops and ranges
@@ -72,17 +91,17 @@ namespace kOS.AddOns.Json
 
                 // All array like structures are stored under "Items"
                 case kOS.Safe.Dump.Items:
-                    if (value is List<object>)
+                    if (value is List<object> arrayList)
                     {
-                        return SerializeArrayLike(value as List<object>);
+                        return SerializeArrayLike(arrayList);
                     }
                     return "[]";
 
                 // All object like structures are stored under "Entries"
                 case kOS.Safe.Dump.Entries:
-                    if (value is List<object>)
+                    if (value is List<object> objectList)
                     {
-                        return SerializeObjectLike(value as List<object>);
+                        return SerializeObjectLike(objectList);
                     }
                     return "{}";
 
@@ -122,9 +141,9 @@ namespace kOS.AddOns.Json
         private string SerializeObjectLike(List<object> keyValueList)
         {
             List<string> result = new List<string>();
-            for (int i = 0; i < keyValueList.Count(); i += 2)
+            for (int i = 0; i < keyValueList.Count; i += 2)
             {
-                string objectKey = Serialize(keyValueList[i] as Dump) as string;
+                string objectKey = Serialize(keyValueList[i] as Dump);
                 if (objectKey == null)
                     throw new KOSSerializationException("Key of object-like is not a string: " + objectKey);
                 if (!(objectKey.StartsWith("\"") && objectKey.EndsWith("\"")))

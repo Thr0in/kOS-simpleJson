@@ -66,6 +66,20 @@ PRINT ADDONS:JSON:STRINGIFY("hello").   // Output: "hello"
 PRINT ADDONS:JSON:STRINGIFY(True).      // Output: true
 ```
 
+### ISSTRINGIFIABLE
+
+Checks if a structure can be serialized to JSON without throwing.
+
+```kerboscript
+SET myLex TO LEXICON(0, "<-- invalid key", "name", "Rocket", "altitude", 1000).
+IF ADDONS:JSON:ISSTRINGIFIABLE(myLex) {
+    SET jsonString TO ADDONS:JSON:STRINGIFY(myLex).
+    PRINT jsonString.
+} ELSE {
+    PRINT "Structure cannot be serialized".
+}
+```
+
 ### PARSE
 
 Parses a JSON string into a kOS structure. Throws if the JSON is invalid.

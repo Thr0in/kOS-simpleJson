@@ -1,4 +1,5 @@
-﻿using kOS.Safe.Encapsulation;
+﻿using kOS.Safe;
+using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Exceptions;
 using kOS.Safe.Serialization;
@@ -24,10 +25,11 @@ namespace kOS.AddOns.Json
         private void InitializeSuffixes()
         {
             AddSuffix("STRINGIFY", new OneArgsSuffix<StringValue, Structure>(Stringify, "Get a json string for an object."));
+            AddSuffix("ISSTRINGIFIABLE", new OneArgsSuffix<BooleanValue, Structure>(IsStringifiable, "Returns true if a structure can be serialized, otherwise false."));
             AddSuffix("PARSE", new OneArgsSuffix<Structure, StringValue>(Parse, "Get an object from a json string."));
             AddSuffix("PARSEORELSE", new TwoArgsSuffix<Structure, StringValue, Structure>(ParseOrElse, "Get an object from a json string, or else return the fallback value."));
             AddSuffix("PARSEORELSEGET", new TwoArgsSuffix<Structure, StringValue, KOSDelegate>(ParseOrElseGet, "Get an object from a json string or else call a delegate and return its value."));
-            AddSuffix("ISPARSEABLE", new OneArgsSuffix<BooleanValue, StringValue>(IsParseable, "Returns true if the string can be parsed as json."));
+            AddSuffix("ISPARSEABLE", new OneArgsSuffix<BooleanValue, StringValue>(IsParseable, "Returns true if the string can be parsed as json, otherwise false."));
         }
 
         private StringValue Stringify(Structure obj)
@@ -38,7 +40,23 @@ namespace kOS.AddOns.Json
             return new StringValue(serializedString);
         }
 
-        private Structure Parse(StringValue json)
+        private BooleanValue IsStringifiable(Structure obj)
+        {
+            SerializableStructure serialized = obj as SerializableStructure;
+            if (serialized == null) return new BooleanValue(false);
+
+            try
+            {
+                Dump dump = new SafeSerializationMgr(shared).Dump(serialized);
+                return SimpleJsonFormatter.WriterInstance.IsStringifiable(dump);
+            }
+            catch (Exception)
+            {
+                return new BooleanValue(false);
+            }
+        }
+
+        private static Structure Parse(StringValue json)
         {
             try
             {
@@ -66,7 +84,7 @@ namespace kOS.AddOns.Json
             }
         }
 
-        private Structure ParseOrElse(StringValue json, Structure elseValue)
+        private static Structure ParseOrElse(StringValue json, Structure elseValue)
         {
             try
             {
@@ -78,7 +96,7 @@ namespace kOS.AddOns.Json
             }
         }
 
-        private Structure ParseOrElseGet(StringValue json, KOSDelegate elseFunc)
+        private static Structure ParseOrElseGet(StringValue json, KOSDelegate elseFunc)
         {
             try
             {
@@ -122,9 +140,9 @@ namespace kOS.AddOns.Json
             }
         }
 
-        private BooleanValue IsParseable(StringValue json)
+        private static BooleanValue IsParseable(StringValue json)
         {
-            return JsonDeserializer.ReaderInstance.IsParseable(json);
+            return JsonDeserializer.IsParseable(json);
         }
     }
 }
